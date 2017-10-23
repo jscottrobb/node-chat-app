@@ -4,6 +4,7 @@ const http = require('http');
 
 const publicPath = path.join(__dirname,'../public');
 const express = require('express');
+const {generateMessage} = require('./utils/message.js');
 
 const port = process.env.PORT || 3000;
 
@@ -27,17 +28,9 @@ io.on('connection', (socket) => {
   //    console.log('Created email',email);
   //  });
 
-  socket.emit('newMessage', {
-    from: 'Admin',
-    text: 'Welcome to the chat room',
-    createdAt: new Date().getTime()
-  });
+  socket.emit('newMessage', generateMessage('Admin', 'Welcome to the chat room'));
 
-  socket.broadcast.emit('newMessage',{
-      from: 'Admin',
-      text: 'New user in the chat room',
-      createdAt: new Date().getTime()
-  });
+  socket.broadcast.emit('newMessage',generateMessage('Admin', 'New user in the chat room'));
 
   socket.on('createMessage', (message) => {
     // io.emit('newMessage', {
@@ -45,11 +38,7 @@ io.on('connection', (socket) => {
     //   text: message.text,
     //   createdAt: new Date().getTime()
     // });
-    socket.broadcast.emit('newMessage',{
-        from: message.from,
-        text: message.text,
-        createdAt: new Date().getTime()
-    });
+    io.emit('newMessage',generateMessage(message.from,message.text));
   });
 
    socket.on('disconnect',() => {
