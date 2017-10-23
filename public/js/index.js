@@ -9,13 +9,13 @@ socket.on('connect', function () {
   //    text: 'Sure, why not.',
   //    createdAt: 345
   //  });
-
-   socket.emit('createMessage', {
-     from: 'Kathy',
-     to: 'John',
-     text: 'Sure, why not.',
-     createdAt: 345
-   });
+   // 
+  //  socket.emit('createMessage', {
+  //    from: 'Kathy',
+  //    to: 'John',
+  //    text: 'Sure, why not.',
+  //    createdAt: 345
+  //  });
 });
 
 socket.on('disconnect', function () {
