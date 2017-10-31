@@ -4,7 +4,7 @@ const http = require('http');
 
 const publicPath = path.join(__dirname,'../public');
 const express = require('express');
-const {generateMessage} = require('./utils/message.js');
+const {generateMessage,generateLocationMessage} = require('./utils/message.js');
 
 const port = process.env.PORT || 3000;
 
@@ -33,12 +33,14 @@ io.on('connection', (socket) => {
   socket.broadcast.emit('newMessage',generateMessage('Admin', 'New user in the chat room'));
 
   socket.on('createMessage', (message, callback) => {
-    // io.emit('newMessage', {
-    //   from: message.from,
-    //   text: message.text,
-    //   createdAt: new Date().getTime()
-    // });
+
     io.emit('newMessage',generateMessage(message.from,message.text));
+    callback('From server');
+  });
+
+  socket.on('createLocationMessage', (loc, callback) => {
+
+    io.emit('newLocationMessage',generateLocationMessage('Admin',loc.lat,loc.long));
     callback('From server');
   });
 
