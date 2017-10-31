@@ -2,20 +2,6 @@ var socket = io();
 
 socket.on('connect', function () {
    console.log('Connected to server');
-
-  //  socket.emit('createEmail', {
-  //    from: 'kathy@gmail.com',
-  //    to: 'John',
-  //    text: 'Sure, why not.',
-  //    createdAt: 345
-  //  });
-   //
-  //  socket.emit('createMessage', {
-  //    from: 'Kathy',
-  //    to: 'John',
-  //    text: 'Sure, why not.',
-  //    createdAt: 345
-  //  });
 });
 
 socket.on('disconnect', function () {
@@ -42,29 +28,34 @@ socket.on('newLocationMessage', function (msg) {
 jQuery('#message-form').on('submit', function (e) {
   e.preventDefault();
 
+  var messageBox = jQuery('[name=message]');
+
   socket.emit('createMessage', {
     from: 'User',
-    text: jQuery('[name=Message]').val()
+    text: messageBox.val()
   }, function(data) {
-
+    messageBox.val('');
   });
 });
 
 var locationButton = jQuery('#send-location');
+
 locationButton.on('click', function () {
   var geo = navigator.geolocation;
   if (!geo) {
     return alert('Geo Location not supported by your browser');
   }
 
+  locationButton.attr('disabled','disabled').text('Sending location...');
+
   geo.getCurrentPosition(function (pos) {
+    locationButton.removeAttr('disabled').text('Send location');
     socket.emit('createLocationMessage', {
       lat: pos.coords.latitude,
       long: pos.coords.longitude
-    }, function(data) {
-
     });
   }, function () {
+    locationButton.removeAttr('disabled').text('Send location');
     return alert('Unable t get location.');
   });
 });
