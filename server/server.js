@@ -32,16 +32,12 @@ io.on('connection', (socket) => {
 
   socket.broadcast.emit('newMessage',generateMessage('Admin', 'New user in the chat room'));
 
-  socket.on('createMessage', (message, callback) => {
-
+  socket.on('createMessage', (message) => {
     io.emit('newMessage',generateMessage(message.from,message.text));
-    callback('From server');
   });
 
-  socket.on('createLocationMessage', (loc, callback) => {
-
+  socket.on('createLocationMessage', (loc) => {
     io.emit('newLocationMessage',generateLocationMessage('Admin',loc.lat,loc.long));
-    callback('From server');
   });
 
    socket.on('disconnect',() => {

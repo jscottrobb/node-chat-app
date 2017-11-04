@@ -11,20 +11,27 @@ socket.on('disconnect', function () {
 socket.on('newMessage', function (msg) {
   console.log('New message',msg);
   var formattedTime = moment(msg.createdAt).format('hh:mm a');
-  var li = jQuery('<li></li>');
-  li.text(`${formattedTime} -> ${msg.from}: ${msg.text}`);
-  jQuery('#messages').append(li);
+  var template = jQuery('#message-template').html();
+  var html = Mustache.render(template, {
+    from: msg.from,
+    text: msg.text,
+    createdAt: formattedTime
+  });
+  jQuery('#messages').append(html);
 });
 
 socket.on('newLocationMessage', function (msg) {
   console.log('New location message',msg);
   var formattedTime = moment(msg.createdAt).format('hh:mm a');
-  var li = jQuery('<li></li>');
-  var a  = jQuery('<a target="_blank">My Location</a>');
-  a.attr('href',msg.url);
-  li.text(`${formattedTime} -> ${msg.from}: `);
-  li.append(a);
-  jQuery('#messages').append(li);
+  var template = jQuery('#location-message-template').html();
+
+  var html = Mustache.render(template, {
+    from: msg.from,
+    url: msg.url,
+    createdAt: formattedTime
+  });
+
+  jQuery('#messages').append(html);
 });
 
 jQuery('#message-form').on('submit', function (e) {
@@ -38,12 +45,14 @@ jQuery('#message-form').on('submit', function (e) {
   }, function(data) {
     messageBox.val('');
   });
+  messageBox.val('');
 });
 
 var locationButton = jQuery('#send-location');
 
 locationButton.on('click', function () {
   var geo = navigator.geolocation;
+
   if (!geo) {
     return alert('Geo Location not supported by your browser');
   }
@@ -58,13 +67,10 @@ locationButton.on('click', function () {
     });
   }, function () {
     locationButton.removeAttr('disabled').text('Send location');
-    return alert('Unable t get location.');
+    return alert('Unable to get location.');
   });
 });
 
-socket.on('newLocationMessage', function (msg) {
-  console.log('New message',msg);
-});
 // socket.on('newEmail', function (email) {
 //   console.log('New Email',email);
 // });
