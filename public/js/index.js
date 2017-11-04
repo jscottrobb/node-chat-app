@@ -18,6 +18,7 @@ socket.on('newMessage', function (msg) {
     createdAt: formattedTime
   });
   jQuery('#messages').append(html);
+  scrollToBottom();
 });
 
 socket.on('newLocationMessage', function (msg) {
@@ -32,6 +33,7 @@ socket.on('newLocationMessage', function (msg) {
   });
 
   jQuery('#messages').append(html);
+  scrollToBottom();
 });
 
 jQuery('#message-form').on('submit', function (e) {
@@ -71,6 +73,17 @@ locationButton.on('click', function () {
   });
 });
 
-// socket.on('newEmail', function (email) {
-//   console.log('New Email',email);
-// });
+function scrollToBottom () {
+  var messages = jQuery('#messages');
+  var newMsg = messages.children('li:last-child');
+  var clientHeight = messages.prop('clientHeight');
+  var scrollTop = messages.prop('scrollTop');
+  var scrollHeight = messages.prop('scrollHeight');
+  var newMsgHeight = newMsg.innerHeight();
+  var lastMsgHeight = newMsg.prev().innerHeight();
+  var height = clientHeight + scrollTop + newMsgHeight + lastMsgHeight;
+
+  if (height >= scrollHeight) {
+     messages.scrollTop(scrollHeight);
+  }
+};
