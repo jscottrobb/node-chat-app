@@ -2,10 +2,30 @@ var socket = io();
 
 socket.on('connect', function () {
    console.log('Connected to server');
+
+   var params = jQuery.deparam(window.location.search);
+
+   socket.emit('join', params, (err) => {
+     if (err) {
+        alert(err);
+        window.location.href = '/';
+     }
+     else {
+       socket.io.user = params.name;
+        console.log('No error on join');
+     }
+   });
 });
 
-socket.on('disconnect', function () {
-  console.log('Disconnected from server');
+socket.on('updateUserList', function (users) {
+
+  var ol = jQuery('<ol></ol>');
+
+  for (let i=0; i < users.length; i++) {
+    ol.append(jQuery('<li></li>').text(users[i]));
+  }
+
+  jQuery('#users').html(ol);
 });
 
 socket.on('newMessage', function (msg) {
@@ -42,7 +62,7 @@ jQuery('#message-form').on('submit', function (e) {
   var messageBox = jQuery('[name=message]');
 
   socket.emit('createMessage', {
-    from: 'User',
+    from: socket.io.user,
     text: messageBox.val()
   }, function(data) {
     messageBox.val('');
