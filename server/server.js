@@ -42,11 +42,19 @@ io.on('connection', (socket) => {
   });
 
   socket.on('createMessage', (message) => {
-    io.emit('newMessage',generateMessage(message.from,message.text));
+    var user = users.getUser(socket.id);
+
+    if (user && isRealString(message.text)) {
+       io.to(user.room).emit('newMessage',generateMessage(user.name,message.text));
+     }
   });
 
   socket.on('createLocationMessage', (loc) => {
-    io.emit('newLocationMessage',generateLocationMessage('Admin',loc.lat,loc.long));
+    var user = users.getUser(socket.id);
+
+     if (user && loc) {
+        io.to(user.room).emit('newLocationMessage',generateLocationMessage(user.name,loc.lat,loc.long));
+     }
   });
 
    socket.on('disconnect',() => {

@@ -11,7 +11,6 @@ socket.on('connect', function () {
         window.location.href = '/';
      }
      else {
-       socket.io.user = params.name;
         console.log('No error on join');
      }
    });
@@ -62,7 +61,6 @@ jQuery('#message-form').on('submit', function (e) {
   var messageBox = jQuery('[name=message]');
 
   socket.emit('createMessage', {
-    from: socket.io.user,
     text: messageBox.val()
   }, function(data) {
     messageBox.val('');
