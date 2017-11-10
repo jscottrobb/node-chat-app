@@ -1,9 +1,16 @@
 var socket = io();
 
+function toTitleCase(str)
+{
+    return str.replace(/\w\S*/g, function(txt){return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();});
+}
+
 socket.on('connect', function () {
    console.log('Connected to server');
-
    var params = jQuery.deparam(window.location.search);
+   var room = toTitleCase(params.room) + ' Chat Room';
+
+   document.getElementById("chat__main__hdr").innerHTML = room;
 
    socket.emit('join', params, (err) => {
      if (err) {
@@ -11,7 +18,7 @@ socket.on('connect', function () {
         window.location.href = '/';
      }
      else {
-        console.log('No error on join');
+        console.log('No error on join into ' + room);
      }
    });
 });

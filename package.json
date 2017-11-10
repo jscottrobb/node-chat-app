@@ -20,6 +20,7 @@
     "express": "^4.14.0",
     "jsonwebtoken": "^7.1.9",
     "lodash": "^4.15.0",
+    "log4js": "^2.3.11",
     "moment": "^2.15.1",
     "mongodb": "^2.2.5",
     "mongoose": "^4.5.9",
