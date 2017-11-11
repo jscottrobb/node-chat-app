@@ -1,13 +1,16 @@
-var env = 'development';
+var fs = require('fs');
+var path = require('path');
 
-if (process.argv) {
-   var prod = process.argv.filter((param) => param.includes('production'));
-    if (prod.length > 0) {
-      env = 'production';
-    }
+var env = 'development';
+var jsonPath = path.join(__dirname, 'config.json');
+
+if(!fs.existsSync(jsonPath, 'utf-8')) {
+    env = 'production';
+    process.env.LOG_BASE = './logs';
+    process.env.LOG_LEVEL = 'off';
 }
 
-if (env === 'test' | env === 'development' | env === 'production') {
+if (env === 'test' | env === 'development') {
   var config = require('./config.json');
   var envConfig = config[env];
 
