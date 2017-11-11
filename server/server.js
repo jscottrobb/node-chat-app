@@ -17,7 +17,7 @@ logger.configure({
     }
   },
   categories: {
-    default: { appenders: [ 'everything' ], level: 'debug'}
+    default: { appenders: [ 'everything' ], level: process.env.LOG_LEVEL}
   }
 });
 
